@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "reallyme-openid4vp-verifier"
+version = "0.1.0"
+description = "OpenID4VP verifier request and response validation boundary."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+include = ["/src/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/NOTICE"]
+
+[features]
+default = []
+native = []
+wasm = []
+
+[dependencies]
+reallyme-codec = { workspace = true, features = ["base64url"] }
+reallyme-openid4vp-dcql = { path = "../dcql", version = "0.1.0" }
+reallyme-openid4vp-formats = { path = "../formats", version = "0.1.0", default-features = false }
+reallyme-openid4vp-types = { path = "../types", version = "0.1.0", default-features = false }
+reallyme-zk-api = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+subtle = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+reallyme-openid4vp-dcql = { path = "../dcql", version = "0.1.0" }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

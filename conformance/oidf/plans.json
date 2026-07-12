@@ -1,0 +1,114 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "suite_commit": "dee9a25160e789f0f80517674693ef7989ab9fa1",
+  "plans": [
+    {
+      "plan_id": "oid4vp-1final-verifier-test-plan",
+      "display_name": "OpenID4VP 1.0 Final verifier role plan",
+      "role_under_test": "verifier",
+      "profile": "base",
+      "suite_identifier_status": "pinned",
+      "local_target": {
+        "connect_service": "OpenId4VpVerifierService",
+        "runtime_crate": "reallyme-openid4vp-runtime",
+        "base_url_env": "EXAMPLE_VERIFIER_BASE_URL"
+      },
+      "automated": true,
+      "automation_status": "execute_mode_wired",
+      "live_execution_status": "ready_requires_live_oidf_server_and_verifier_host",
+      "readiness_evidence": [
+        "conformance/scripts/run_oidf_verifier_plan.sh",
+        "conformance/scripts/drive_oidf_verifier_flow.py",
+        "crates/runtime/src/handle_authorization_request_launch.rs",
+        "crates/runtime/src/prepare_authorization_request_launch.rs"
+      ]
+    },
+    {
+      "plan_id": "oid4vp-1final-verifier-haip-test-plan",
+      "display_name": "OpenID4VP 1.0 Final / HAIP verifier role plan",
+      "role_under_test": "verifier",
+      "profile": "haip",
+      "suite_identifier_status": "pinned",
+      "local_target": {
+        "connect_service": "OpenId4VpVerifierService",
+        "runtime_crate": "reallyme-openid4vp-runtime",
+        "base_url_env": "EXAMPLE_VERIFIER_BASE_URL"
+      },
+      "variant_matrix": {
+        "client_id_prefix": ["x509_hash"],
+        "request_method": ["request_uri_signed"],
+        "response_mode": ["direct_post", "direct_post.jwt"],
+        "credential_format": ["sd_jwt_vc", "iso_mdl"]
+      },
+      "automated": true,
+      "automation_status": "execute_mode_wired",
+      "live_execution_status": "ready_requires_live_oidf_server_and_verifier_host",
+      "readiness_evidence": [
+        "conformance/scripts/run_oidf_verifier_plan.sh",
+        "conformance/scripts/drive_oidf_verifier_flow.py",
+        "crates/runtime/src/handle_authorization_request_launch.rs",
+        "crates/runtime/src/prepare_authorization_request_launch.rs"
+      ]
+    },
+    {
+      "plan_id": "oid4vp-1final-wallet-test-plan",
+      "display_name": "OpenID4VP 1.0 Final wallet role plan",
+      "role_under_test": "wallet",
+      "profile": "base",
+      "suite_identifier_status": "pinned",
+      "local_target": {
+        "wallet_crate": "reallyme-openid4vp-wallet"
+      },
+      "automated": true,
+      "automation_status": "execute_mode_wired",
+      "live_execution_status": "ready_requires_live_oidf_server_and_wallet_harness",
+      "readiness_evidence": [
+        "conformance/scripts/run_oidf_wallet_plan.sh",
+        "conformance/scripts/drive_oidf_wallet_flow.py",
+        "conformance/oidf/configs/vp-wallet-test-config-dcql-sdjwt-haip.json",
+        "../wallet/crates/runtime/src/serve_oidf_wallet_harness.rs",
+        "../wallet/crates/runtime/examples/serve_oidf_wallet_harness.rs",
+        "../wallet/conformance/scripts/serve_oidf_wallet_harness.sh"
+      ]
+    },
+    {
+      "plan_id": "oid4vp-1final-wallet-haip-test-plan",
+      "display_name": "OpenID4VP 1.0 Final / HAIP wallet role plan",
+      "role_under_test": "wallet",
+      "profile": "haip",
+      "suite_identifier_status": "pinned",
+      "local_target": {
+        "wallet_crate": "reallyme-openid4vp-wallet"
+      },
+      "variant_matrix": {
+        "direct_post.jwt": {
+          "client_id_prefix": ["x509_hash"],
+          "request_method": ["request_uri_signed"],
+          "credential_format": ["sd_jwt_vc", "iso_mdl"]
+        },
+        "dc_api.jwt": {
+          "client_id_prefix": ["web-origin", "x509_hash"],
+          "request_method": [
+            "request_uri_unsigned",
+            "request_uri_signed",
+            "request_uri_multisigned"
+          ],
+          "credential_format": ["sd_jwt_vc", "iso_mdl"]
+        }
+      },
+      "automated": true,
+      "automation_status": "execute_mode_wired",
+      "live_execution_status": "ready_requires_live_oidf_server_and_wallet_harness",
+      "readiness_evidence": [
+        "conformance/scripts/run_oidf_wallet_plan.sh",
+        "conformance/scripts/drive_oidf_wallet_flow.py",
+        "conformance/oidf/configs/vp-wallet-test-config-dcql-sdjwt-haip.json",
+        "../wallet/crates/runtime/src/serve_oidf_wallet_harness.rs",
+        "../wallet/crates/runtime/examples/serve_oidf_wallet_harness.rs",
+        "../wallet/conformance/scripts/serve_oidf_wallet_harness.sh"
+      ]
+    }
+  ]
+}

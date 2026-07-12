@@ -1,0 +1,24 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "specification": "haip-1.0-final",
+  "requirements": [
+    {
+      "id": "haip-presentation-capability-profile",
+      "level": "MUST",
+      "summary": "Expose HAIP presentation capability profile without weakening base OpenID4VP security rules.",
+      "implementation_paths": [
+        "crates/profiles/src/describe_haip.rs"
+      ],
+      "positive_tests": [
+        "reallyme_openid4vp_profiles::describe_haip::tests::haip_profile_includes_dc_api_and_mdoc",
+        "reallyme_openid4vp_profiles::describe_haip::tests::haip_shares_cross_protocol_identity"
+      ],
+      "negative_tests": [],
+      "oidf_modules": [],
+      "eudi_tests": [],
+      "status": "implemented"
+    }
+  ]
+}

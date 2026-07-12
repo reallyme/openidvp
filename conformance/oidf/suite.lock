@@ -1,0 +1,21 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "suite": {
+    "repository": "https://gitlab.com/openid/conformance-suite",
+    "pinned_ref": "release-v5.2.0",
+    "commit": "dee9a25160e789f0f80517674693ef7989ab9fa1",
+    "describe": "release-v5.2.0",
+    "latest_head_observed": "859d7d83e9713f9caeda766ba57bb86b97f4d6e6",
+    "observed_at": "2026-07-12",
+    "status": "release-pinned",
+    "discovery_rule": "Update this release pin only after refreshing oidf/plans.json and oidf/modules.json from the same conformance-suite revision."
+  },
+  "runner": {
+    "script": "conformance/scripts/run_oidf_verifier_plan.sh",
+    "wallet_script": "conformance/scripts/run_oidf_wallet_plan.sh",
+    "result_directory": "conformance/results",
+    "current_status": "ready_for_execute_mode_external_run"
+  }
+}

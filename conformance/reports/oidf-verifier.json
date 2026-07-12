@@ -1,0 +1,20 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "oidf-verifier",
+  "status": "ready_for_execute_mode_external_run",
+  "generated_at": "2026-07-12",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "pending": 1
+  },
+  "evidence": [
+    "conformance/scripts/run_oidf_verifier_plan.sh",
+    "conformance/scripts/drive_oidf_verifier_flow.py",
+    "crates/runtime/src/handle_authorization_request_launch.rs",
+    "crates/runtime/src/prepare_authorization_request_launch.rs"
+  ],
+  "next_action": "Run the pinned OIDF verifier plan with OIDF_RUNNER_MODE=execute, OIDF_VERIFIER_FLOW_DRIVER_MODE=execute, CONFORMANCE_SERVER, EXAMPLE_VERIFIER_BASE_URL, and OIDF_VERIFIER_LAUNCH_ENDPOINT configured, then archive the suite export under conformance/reports/oidf/."
+}

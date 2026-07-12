@@ -1,0 +1,62 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "identity-sdk-openid4vp-migration",
+  "reviewed_repository": "reallyme/identity-sdk",
+  "reviewed_at": "2026-07-12",
+  "status": "openid4vp_consumption_confirmed",
+  "findings": [
+    {
+      "id": "sdk-openid4vp-sibling-facade-present",
+      "status": "ok",
+      "paths": [
+        "crates/sdk/tests/openid4vp_sibling_facade_tests.rs",
+        "crates/sdk/Cargo.toml"
+      ],
+      "evidence": "SDK already depends on reallyme-openid4vp sibling crates and tests DCQL-keyed AuthorizationResponse round trips."
+    },
+    {
+      "id": "sdk-openid4vp-proto-final-shape",
+      "status": "ok",
+      "paths": [
+        "proto/openid4vp/v1/openid4vp.proto"
+      ],
+      "evidence": "SDK-local openid4vp.v1 proto carries ClientIdentifierPrefix, DCQL JSON, DCQL-keyed VpTokenEntry, ProblemDetails, DC API, and Connect-era service messages."
+    },
+    {
+      "id": "sdk-legacy-delivery-openid4vp-core",
+      "status": "removed",
+      "paths": [
+        "crates/identity/presentation/delivery/openid4vp/core/src/request.rs",
+        "crates/identity/presentation/delivery/openid4vp/core/src/response.rs",
+        "crates/identity/presentation/delivery/openid4vp/core/tests/openid4vp_request_tests.rs",
+        "crates/identity/presentation/delivery/openid4vp/core/tests/openid4vp_tests.rs"
+      ],
+      "replacement": [
+        "reallyme_openid4vp::wallet::parse_authorization_request_transport",
+        "reallyme_openid4vp::wallet::verify_request_transport",
+        "reallyme_openid4vp::types::AuthorizationResponse",
+        "reallyme_openid4vp::proto_codec"
+      ],
+      "reason": "The legacy OpenID4VP delivery crate and SDK dependency were removed from identity-sdk. The SDK now consumes the sibling reallyme-openid4vp facade and codec tests for final OpenID4VP shapes."
+    },
+    {
+      "id": "sdk-legacy-presentation-definition-binding",
+      "status": "not_openid4vp_blocking",
+      "paths": [
+        "crates/identity/presentation/vp/sd-jwt/src/build.rs",
+        "crates/identity/presentation/vp/sd-jwt/src/verify.rs",
+        "crates/identity/presentation/vp/api/src/build.rs"
+      ],
+      "replacement": [
+        "OpenID4VP nonce and audience binding from reallyme-openid4vp verifier/wallet session records",
+        "DCQL query id and selected claim binding instead of presentation_definition_hash"
+      ],
+      "reason": "Presentation-definition hash terminology still exists in SIOP/VP-level identity-sdk components, but active OpenID4VP SDK consumption now uses reallyme-openid4vp RequestBinding, HolderBindingClaims, and DCQL-keyed response tests."
+    }
+  ],
+  "verified_by": [
+    "cargo test -p identity-sdk --test openid4vp_sibling_facade_tests --test openid4vp_metadata_tests"
+  ]
+}

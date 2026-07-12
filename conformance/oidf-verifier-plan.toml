@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[oidf]
+suite = "https://gitlab.com/openid/conformance-suite"
+pinned_commit = "dee9a25160e789f0f80517674693ef7989ab9fa1"
+plan = "oid4vp-1final-verifier-test-plan"
+
+[target]
+crate = "reallyme-openid4vp-runtime"
+base_url_env = "EXAMPLE_VERIFIER_BASE_URL"
+
+[wire]
+openid4vp = "1.0-final"
+dcql = true
+presentation_exchange = false
+vp_token_shape = "dcql_query_id_object"
+client_id_prefixes = true
+
+[fixtures]
+eudi = "conformance/fixtures/eudi"
+ewc = "conformance/fixtures/ewc"

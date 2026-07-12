@@ -1,0 +1,18 @@
+SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+
+SPDX-License-Identifier: Apache-2.0
+
+ReallyMe OpenID4VP
+Copyright © 2026 ReallyMe LLC. All rights reserved.
+
+This product includes software developed by ReallyMe LLC and distributed under
+the Apache License, Version 2.0.
+
+ReallyMe OpenID4VP implements OpenID for Verifiable Presentations protocol
+infrastructure and depends on ReallyMe cryptographic and identity components
+for primitive cryptography, JOSE handling, credential envelope formats, and
+profile-specific credential support. Dependency license terms are recorded in
+the package manifests and enforced by the repository dependency policy.
+
+This NOTICE file is informational and does not modify the license terms in
+LICENSE or any third-party dependency license.

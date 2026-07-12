@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "reallyme-openid4vp-proto"
+version = "0.1.0"
+description = "ReallyMe OpenID4VP protobuf bindings generated with Buffa."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+include = ["/src/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/NOTICE"]
+
+[features]
+default = []
+generated = [
+    "dep:buffa",
+    "dep:buffa-types",
+    "dep:serde",
+]
+connect = [
+    "generated",
+    "dep:connectrpc",
+]
+
+[dependencies]
+buffa = { workspace = true, optional = true }
+buffa-types = { workspace = true, optional = true }
+connectrpc = { workspace = true, optional = true }
+serde = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "reallyme-openid4vp-wallet"
+version = "0.1.0"
+description = "OpenID4VP wallet-side request verification and response construction boundary."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+include = ["/src/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/NOTICE"]
+
+[features]
+default = []
+jose = [
+    "dep:reallyme-crypto",
+    "dep:reallyme-jose",
+    "reallyme-jose/jose-crypto",
+    "reallyme-crypto/jwk",
+]
+native = ["reallyme-crypto?/native", "reallyme-jose?/native"]
+wasm = ["reallyme-crypto?/wasm", "reallyme-jose?/wasm"]
+
+[dependencies]
+reallyme-openid4vp-dcql = { path = "../dcql", version = "0.1.0" }
+reallyme-openid4vp-formats = { path = "../formats", version = "0.1.0", default-features = false }
+reallyme-openid4vp-types = { path = "../types", version = "0.1.0", default-features = false }
+reallyme-crypto = { workspace = true, optional = true }
+reallyme-jose = { workspace = true, optional = true }
+reallyme-zk-api = { workspace = true }
+subtle = { workspace = true }
+thiserror = { workspace = true }
+zeroize = { workspace = true }
+
+[dev-dependencies]
+reallyme-codec = { workspace = true, features = ["base64url"] }
+reallyme-crypto = { workspace = true, features = ["aes", "jwk", "p256"] }
+reallyme-jose = { workspace = true, features = ["jose-crypto"] }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

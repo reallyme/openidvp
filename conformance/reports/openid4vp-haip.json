@@ -1,0 +1,18 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "openid4vp-haip",
+  "status": "local_conformance_ready_external_oidf_pending",
+  "generated_at": "2026-07-12",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "pending": 1
+  },
+  "evidence": [
+    "conformance/reports/oidf-verifier.json",
+    "conformance/reports/oidf-wallet.json",
+    "conformance/reports/oidf-manifest.json"
+  ]
+}

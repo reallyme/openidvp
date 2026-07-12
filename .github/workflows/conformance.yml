@@ -1,0 +1,154 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: OIDF Conformance
+
+on:
+  workflow_dispatch:
+    inputs:
+      oidf_runner_mode:
+        description: "OIDF runner mode"
+        required: true
+        default: "pending"
+        type: choice
+        options:
+          - "pending"
+          - "execute"
+      oidf_flow_driver_mode:
+        description: "OIDF verifier flow driver mode"
+        required: true
+        default: "pending"
+        type: choice
+        options:
+          - "pending"
+          - "execute"
+      oidf_wallet_runner_mode:
+        description: "OIDF wallet runner mode"
+        required: true
+        default: "pending"
+        type: choice
+        options:
+          - "pending"
+          - "execute"
+      oidf_wallet_flow_driver_mode:
+        description: "OIDF wallet flow driver mode"
+        required: true
+        default: "pending"
+        type: choice
+        options:
+          - "pending"
+          - "execute"
+      conformance_server:
+        description: "OIDF conformance-suite server URL"
+        required: false
+        type: string
+      verifier_launch_endpoint:
+        description: "ReallyMe verifier launch endpoint URL"
+        required: false
+        type: string
+      wallet_harness_endpoint:
+        description: "ReallyMe wallet harness endpoint URL"
+        required: false
+        type: string
+      example_verifier_base_url:
+        description: "ReallyMe verifier public base URL"
+        required: false
+        default: "http://127.0.0.1:8787"
+        type: string
+  schedule:
+    - cron: "17 4 * * *"
+
+jobs:
+  oid4vp:
+    name: OID4VP verifier and wallet plans
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check private dependency access
+        id: dependency-access
+        env:
+          GH_TOKEN: ${{ secrets.REALLYME_CI_TOKEN }}
+        run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "::notice::Skipping OIDF conformance harness because REALLYME_CI_TOKEN is not configured for private sibling repositories."
+            echo "available=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          echo "available=true" >> "${GITHUB_OUTPUT}"
+
+      - name: Checkout sibling ReallyMe crates
+        if: steps.dependency-access.outputs.available == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.REALLYME_CI_TOKEN }}
+        run: |
+          gh repo clone reallyme/identity ../identity -- --depth 1
+          gh repo clone reallyme/zk ../zk -- --depth 1
+
+      - name: Preflight OIDF verifier conformance prerequisites
+        if: steps.dependency-access.outputs.available == 'true'
+        run: conformance/scripts/preflight_oidf_verifier.sh
+
+      - name: Install Rust toolchain
+        if: steps.dependency-access.outputs.available == 'true'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build runtime verifier host
+        if: steps.dependency-access.outputs.available == 'true'
+        run: cargo build -p reallyme-openid4vp-runtime --all-features
+
+      - name: Checkout OIDF conformance suite
+        if: steps.dependency-access.outputs.available == 'true'
+        run: |
+          git init target/oidf/conformance-suite
+          git -C target/oidf/conformance-suite remote add origin https://gitlab.com/openid/conformance-suite.git
+          git -C target/oidf/conformance-suite fetch --depth 1 origin refs/tags/release-v5.2.0
+          git -C target/oidf/conformance-suite checkout --detach FETCH_HEAD
+
+      - name: Build OIDF conformance suite
+        if: steps.dependency-access.outputs.available == 'true'
+        working-directory: target/oidf/conformance-suite
+        run: mvn -q -DskipTests package
+
+      - name: Discover OIDF OpenID4VP plans and modules
+        if: steps.dependency-access.outputs.available == 'true'
+        run: conformance/scripts/discover_oidf_openid4vp.py target/oidf/conformance-suite conformance/results/oidf-discovery
+
+      - name: Run OID4VP verifier plan harness
+        if: steps.dependency-access.outputs.available == 'true'
+        env:
+          CONFORMANCE_SUITE_DIR: target/oidf/conformance-suite
+          CONFORMANCE_SERVER: ${{ inputs.conformance_server || secrets.OIDF_CONFORMANCE_SERVER || '' }}
+          EXAMPLE_VERIFIER_BASE_URL: ${{ inputs.example_verifier_base_url || secrets.OIDF_EXAMPLE_VERIFIER_BASE_URL || 'http://127.0.0.1:8787' }}
+          OIDF_RUNNER_MODE: ${{ inputs.oidf_runner_mode || secrets.OIDF_RUNNER_MODE || 'pending' }}
+          OIDF_VERIFIER_FLOW_DRIVER_MODE: ${{ inputs.oidf_flow_driver_mode || secrets.OIDF_VERIFIER_FLOW_DRIVER_MODE || 'pending' }}
+          OIDF_VERIFIER_LAUNCH_ENDPOINT: ${{ inputs.verifier_launch_endpoint || secrets.OIDF_VERIFIER_LAUNCH_ENDPOINT || '' }}
+          OIDF_PLAN_ID: oid4vp-1final-verifier-test-plan
+          OIDF_SUITE_COMMIT: dee9a25160e789f0f80517674693ef7989ab9fa1
+        run: conformance/scripts/run_oidf_verifier_plan.sh
+
+      - name: Run OID4VP wallet plan harness
+        if: steps.dependency-access.outputs.available == 'true'
+        env:
+          CONFORMANCE_SUITE_DIR: target/oidf/conformance-suite
+          CONFORMANCE_SERVER: ${{ inputs.conformance_server || secrets.OIDF_CONFORMANCE_SERVER || '' }}
+          OIDF_WALLET_RUNNER_MODE: ${{ inputs.oidf_wallet_runner_mode || secrets.OIDF_WALLET_RUNNER_MODE || 'pending' }}
+          OIDF_WALLET_FLOW_DRIVER_MODE: ${{ inputs.oidf_wallet_flow_driver_mode || secrets.OIDF_WALLET_FLOW_DRIVER_MODE || 'pending' }}
+          OIDF_WALLET_HARNESS_ENDPOINT: ${{ inputs.wallet_harness_endpoint || secrets.OIDF_WALLET_HARNESS_ENDPOINT || '' }}
+          OIDF_PLAN_ID: oid4vp-1final-wallet-test-plan
+          OIDF_SUITE_COMMIT: dee9a25160e789f0f80517674693ef7989ab9fa1
+        run: conformance/scripts/run_oidf_wallet_plan.sh
+
+      - name: Summarize conformance results
+        if: always() && steps.dependency-access.outputs.available == 'true'
+        run: python3 conformance/scripts/summarize_conformance_result.py conformance/results/*.json
+
+      - name: Upload conformance result artifact
+        uses: actions/upload-artifact@v4
+        if: always() && steps.dependency-access.outputs.available == 'true'
+        with:
+          name: oidf-conformance-results
+          path: conformance/results
+          if-no-files-found: error

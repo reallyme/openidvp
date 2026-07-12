@@ -1,0 +1,19 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "openid4vp-eudi",
+  "status": "pinned_upstream_inventory_refreshed",
+  "generated_at": "2026-07-12",
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  "evidence": [
+    "conformance/requirements/eudi-presentation.json",
+    "conformance/eudi/sources.lock",
+    "conformance/eudi/upstream-tests.json",
+    "conformance/eudi/fixture-inventory.json"
+  ]
+}

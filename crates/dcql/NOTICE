@@ -1,0 +1,12 @@
+SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+
+SPDX-License-Identifier: Apache-2.0
+
+ReallyMe OpenID4VP DCQL
+Copyright © 2026 ReallyMe LLC. All rights reserved.
+
+This crate provides the Digital Credentials Query Language model, validation,
+and evaluation engine used by ReallyMe OpenID4VP.
+
+This NOTICE file is informational and does not modify the license terms in
+LICENSE or any third-party dependency license.

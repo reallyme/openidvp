@@ -1,0 +1,135 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[workspace]
+resolver = "2"
+members = [
+    ".",
+    "crates/dcql",
+    "crates/types",
+    "crates/verifier",
+    "crates/wallet",
+    "crates/dc-api",
+    "crates/formats",
+    "crates/profiles",
+    "crates/http",
+    "crates/runtime",
+    "crates/proto/openid4vp",
+    "crates/proto/codec",
+    "conformance",
+]
+
+[package]
+name = "reallyme-openid4vp"
+version = "0.1.0"
+description = "ReallyMe OpenID4VP protocol facade."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+include = ["/src/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/NOTICE"]
+
+[features]
+default = ["native"]
+native = [
+    "reallyme-openid4vp-dc-api?/native",
+    "reallyme-openid4vp-formats?/native",
+    "reallyme-openid4vp-types/native",
+    "reallyme-openid4vp-verifier/native",
+    "reallyme-openid4vp-wallet/native",
+    "reallyme-openid4vp-runtime?/native",
+]
+wasm = [
+    "reallyme-openid4vp-dc-api?/wasm",
+    "reallyme-openid4vp-formats?/wasm",
+    "reallyme-openid4vp-types/wasm",
+    "reallyme-openid4vp-verifier/wasm",
+    "reallyme-openid4vp-wallet/wasm",
+    "reallyme-openid4vp-runtime?/wasm",
+]
+dc-api = ["dep:reallyme-openid4vp-dc-api"]
+formats = ["dep:reallyme-openid4vp-formats"]
+http = ["dep:reallyme-openid4vp-http"]
+profiles = ["dep:reallyme-openid4vp-profiles"]
+runtime = ["dep:reallyme-openid4vp-runtime"]
+jose = [
+    "runtime",
+    "reallyme-openid4vp-runtime/jose",
+    "reallyme-openid4vp-wallet/jose",
+]
+proto = [
+    "dep:reallyme-openid4vp-proto",
+    "dep:reallyme-openid4vp-proto-codec",
+    "reallyme-openid4vp-proto/generated",
+]
+connect = [
+    "proto",
+    "reallyme-openid4vp-proto/connect",
+]
+
+[dependencies]
+reallyme-openid4vp-dcql = { path = "crates/dcql", version = "0.1.0" }
+reallyme-openid4vp-dc-api = { path = "crates/dc-api", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-formats = { path = "crates/formats", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-http = { path = "crates/http", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-profiles = { path = "crates/profiles", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-proto = { path = "crates/proto/openid4vp", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-proto-codec = { path = "crates/proto/codec", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-runtime = { path = "crates/runtime", version = "0.1.0", default-features = false, optional = true }
+reallyme-openid4vp-types = { path = "crates/types", version = "0.1.0", default-features = false }
+reallyme-openid4vp-verifier = { path = "crates/verifier", version = "0.1.0", default-features = false }
+reallyme-openid4vp-wallet = { path = "crates/wallet", version = "0.1.0", default-features = false }
+
+[lints]
+workspace = true
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.96"
+license = "Apache-2.0"
+repository = "https://github.com/reallyme/openid4vp"
+publish = false
+
+[workspace.dependencies]
+serde = "1.0"
+serde_json = "1.0"
+sha2 = "0.11"
+subtle = "2.6"
+thiserror = "2.0"
+time = "0.3"
+zeroize = "1.9"
+proptest = { version = "1.11.0", default-features = false, features = ["std"] }
+buffa = { version = "0.8.1", features = ["json"] }
+buffa-types = { version = "0.8.1", features = ["json"] }
+connectrpc = { version = "0.8.1", default-features = false, features = ["json"] }
+reallyme-jose = { version = "0.1.0", path = "../identity/crates/jose", default-features = false }
+
+reallyme-codec = { version = "0.1.1", default-features = false }
+reallyme-crypto = { version = "0.1.6", default-features = false }
+reallyme-profiles = { version = "0.1.0", path = "../identity/crates/profiles", default-features = false }
+reallyme-zk-api = { version = "0.1.0", path = "../zk/crates/api", default-features = false }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+overflow-checks = true
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[workspace.lints.clippy]
+dbg_macro = "deny"
+expect_used = "deny"
+large_include_file = "deny"
+panic = "deny"
+print_stderr = "deny"
+print_stdout = "deny"
+todo = "deny"
+unimplemented = "deny"
+unreachable = "deny"
+unwrap_used = "deny"
+wildcard_imports = "deny"

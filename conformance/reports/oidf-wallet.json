@@ -1,0 +1,61 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "oidf-wallet",
+  "status": "wallet_launch_accepted_response_pending",
+  "generated_at": "2026-07-12",
+  "summary": {
+    "passed": 0,
+    "failed": 0,
+    "pending": 1
+  },
+  "last_run": {
+    "suite_ref": "release-v5.2.0",
+    "suite_commit": "dee9a25160e789f0f80517674693ef7989ab9fa1",
+    "suite_version": "5.2.0",
+    "plan_id": "oid4vp-1final-wallet-test-plan",
+    "suite_plan_instance": "TJinQFL2CWZBV",
+    "variant": {
+      "credential_format": "sd_jwt_vc",
+      "client_id_prefix": "x509_hash",
+      "request_method": "request_uri_signed",
+      "vp_profile": "haip",
+      "response_mode": "direct_post.jwt"
+    },
+    "harness_endpoint": "http://127.0.0.1:8787/oidf/wallet/authorize",
+    "wallet_flow_driver": "conformance/scripts/drive_oidf_wallet_flow.py",
+    "wallet_config": "conformance/oidf/configs/vp-wallet-test-config-dcql-sdjwt-haip.json",
+    "harness_launch_observed": {
+      "session_id": 0,
+      "transport": "request_uri",
+      "method": "get",
+      "wallet_nonce_present": false,
+      "expected_client_id_present": true
+    },
+    "blocked_after": "wallet_harness_launch_accepted"
+  },
+  "previous_completed_run": {
+    "status": "failed",
+    "suite_plan_instance": "2R7ANmdNwQqak",
+    "export_archive": "conformance/reports/oidf/exports/oid4vp-1final-wallet-test-plan-2026-07-12-failed.zip",
+    "export_sha256": "7ae2b6e068c6c257e5b6e392a728d3b106d68d27deebdc9dec3c240ae888832d",
+    "failure_sources": [
+      "EnsureCredentialTrustAnchorConfigured",
+      "EnsureStatusListTrustAnchorConfigured",
+      "ExtractDCQLQueryFromClientConfiguration"
+    ],
+    "superseded_by": "conformance/oidf/configs/vp-wallet-test-config-dcql-sdjwt-haip.json"
+  },
+  "evidence": [
+    "conformance/scripts/run_oidf_wallet_plan.sh",
+    "conformance/scripts/drive_oidf_wallet_flow.py",
+    "conformance/oidf/configs/vp-wallet-test-config-dcql-sdjwt-haip.json",
+    "../wallet/crates/runtime/src/serve_oidf_wallet_harness.rs",
+    "../wallet/crates/runtime/examples/serve_oidf_wallet_harness.rs",
+    "../wallet/conformance/scripts/serve_oidf_wallet_harness.sh",
+    "conformance/reports/oidf/oid4vp-1final-wallet-test-plan.json",
+    "conformance/reports/oidf/exports/oid4vp-1final-wallet-test-plan-2026-07-12-failed.zip"
+  ],
+  "next_action": "Complete wallet response generation in reallyme/wallet or the identity-sdk composed harness so the accepted OIDF launch posts a valid direct_post.jwt authorization response, then rerun the pinned wallet plan and archive the suite export."
+}

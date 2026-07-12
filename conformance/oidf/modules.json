@@ -1,0 +1,380 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "suite_commit": "dee9a25160e789f0f80517674693ef7989ab9fa1",
+  "modules": [
+    {
+      "module_id": "oid4vp-1final-verifier-happy-flow",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["authorization_request", "dcql", "direct_post"],
+      "sections": ["OID4VP-1FINAL-5", "OID4VP-1FINAL-6", "OID4VP-1FINAL-8"],
+      "automated": false,
+      "local_tests": ["reallyme_openid4vp_runtime::verify_runtime::handles_valid_direct_post"]
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-minimal-cnf-jwk",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["holder_binding", "kb_jwt"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_verifier::holder_binding::tests::accepts_matching_holder_binding_claims"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-request-uri-method-post",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["request_uri", "wallet_nonce"],
+      "sections": ["OID4VP-1FINAL-5.10"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_runtime::verify_runtime::serves_request_object_by_post_with_wallet_nonce"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-invalid-session-transcript",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["mdoc", "session_transcript"],
+      "sections": ["OID4VP-1FINALA-B.2.6.2"],
+      "automated": false,
+      "local_tests": ["reallyme_openid4vp_formats::mdoc::tests::rejects_empty_session_transcript_before_identity_verify"]
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-invalid-kb-jwt-signature",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["holder_binding", "kb_jwt"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-invalid-credential-signature",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["credential_format", "identity_envelope_delegation"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-invalid-sd-hash",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["sd_jwt_vc", "holder_binding"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-invalid-kb-jwt-nonce",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["nonce", "holder_binding"],
+      "sections": ["OID4VP-1FINAL-5.2", "OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_verifier::holder_binding::tests::rejects_holder_binding_with_wrong_nonce"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-invalid-kb-jwt-aud",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["audience", "holder_binding"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_verifier::holder_binding::tests::rejects_holder_binding_with_wrong_audience"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-kb-jwt-iat-in-past",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["holder_binding", "temporal_validation"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-verifier-kb-jwt-iat-in-future",
+      "role_under_test": "verifier",
+      "plans": [
+        "oid4vp-1final-verifier-test-plan",
+        "oid4vp-1final-verifier-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["holder_binding", "temporal_validation"],
+      "sections": ["OID4VP-1FINAL-8.1"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-happy-flow",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["request_object", "dcql", "vp_token"],
+      "sections": ["OID4VP-1FINAL-5", "OID4VP-1FINAL-6", "OID4VP-1FINAL-8"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_wallet::verify_signed_request_object_with_jose::tests::verifies_signed_request_object_with_jose"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-alternate-happy-flow",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["request_object", "response_mode"],
+      "sections": ["OID4VP-1FINAL-5", "OID4VP-1FINAL-8"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-request-uri-method-post",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["request_uri", "wallet_nonce"],
+      "sections": ["OID4VP-1FINAL-5.10"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_wallet::transport::tests::classifies_post_request_uri_with_wallet_nonce",
+        "reallyme_openid4vp_http::resolve_request_uri::tests::resolves_request_uri_transport_to_request_jwt"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-ignores-unusable-encryption-key",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "positive",
+      "topics": ["client_metadata", "response_encryption"],
+      "sections": ["OID4VP-1FINAL-8.3"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-fewer-claims-than-available",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "dcql",
+      "topics": ["dcql", "necessary_claims"],
+      "sections": ["OID4VP-1FINAL-6"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_dcql::evaluate::tests::evaluates_required_query_with_selected_claims"
+      ]
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-optional-credential-set",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "dcql",
+      "topics": ["dcql", "credential_sets"],
+      "sections": ["OID4VP-1FINAL-6"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-no-claims-in-dcql-query",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "dcql",
+      "topics": ["dcql"],
+      "sections": ["OID4VP-1FINAL-6"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-response-uri-not-client-id",
+      "role_under_test": "wallet",
+      "plans": ["oid4vp-1final-wallet-test-plan"],
+      "category": "negative",
+      "topics": ["response_uri", "client_id_prefix"],
+      "sections": ["OID4VP-1FINAL-8.5"],
+      "automated": false,
+      "local_tests": [],
+      "haip_applicability": "excluded_by_upstream_variant_matrix"
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-invalid-request-object-signature",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["request_object", "jws"],
+      "sections": ["OID4VP-1FINAL-5"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_wallet::verify_signed_request_object_with_jose::tests::rejects_signed_request_object_with_wrong_key"
+      ],
+      "haip_applicability": "signed_request_variants_only"
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-multisigned-one-invalid-signature",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["request_object", "multisigned"],
+      "sections": ["OID4VP-1FINAL-5"],
+      "automated": false,
+      "local_tests": [],
+      "haip_applicability": "dc_api.jwt_request_uri_multisigned_only"
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-mismatched-client-id",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["request_object", "client_id_prefix"],
+      "sections": ["OID4VP-1FINAL-5"],
+      "automated": false,
+      "local_tests": ["reallyme_openid4vp_wallet::jar::tests::rejects_transport_client_id_mismatch"],
+      "haip_applicability": "not_applicable_to_dc_api.jwt_multisigned"
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-redirect-uri-with-direct-post",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["redirect_uri", "direct_post"],
+      "sections": ["OID4VP-1FINAL-8.2"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-missing-nonce",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["nonce", "request_object"],
+      "sections": ["OID4VP-1FINAL-5"],
+      "automated": false,
+      "local_tests": ["reallyme_openid4vp_wallet::jar::tests::rejects_request_object_without_nonce"]
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-wrong-expected-origins",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["dc_api", "expected_origins"],
+      "sections": ["OID4VP-1FINAL-8.5"],
+      "automated": false,
+      "local_tests": [
+        "reallyme_openid4vp_dc_api::request::tests::rejects_signed_dc_api_request_without_expected_origins"
+      ],
+      "haip_applicability": "signed_request_variants_only"
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-invalid-client-id-prefix",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["client_id_prefix"],
+      "sections": ["OID4VP-1FINAL-5.9"],
+      "automated": false,
+      "local_tests": []
+    },
+    {
+      "module_id": "oid4vp-1final-wallet-negative-test-unknown-transaction-data-type",
+      "role_under_test": "wallet",
+      "plans": [
+        "oid4vp-1final-wallet-test-plan",
+        "oid4vp-1final-wallet-haip-test-plan"
+      ],
+      "category": "negative",
+      "topics": ["transaction_data"],
+      "sections": ["OID4VP-1FINAL-5.1", "OID4VP-1FINAL-8.4"],
+      "automated": false,
+      "local_tests": []
+    }
+  ]
+}

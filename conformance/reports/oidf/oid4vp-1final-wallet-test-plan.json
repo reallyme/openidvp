@@ -1,0 +1,60 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "oid4vp-1final-wallet-test-plan",
+  "status": "blocked_after_wallet_launch",
+  "generated_at": "2026-07-12",
+  "suite": {
+    "repository": "https://gitlab.com/openid/conformance-suite",
+    "ref": "release-v5.2.0",
+    "commit": "dee9a25160e789f0f80517674693ef7989ab9fa1",
+    "version": "5.2.0"
+  },
+  "run": {
+    "plan_id": "oid4vp-1final-wallet-test-plan",
+    "suite_plan_instance": "TJinQFL2CWZBV",
+    "harness_endpoint": "http://127.0.0.1:8787/oidf/wallet/authorize",
+    "wallet_flow_driver": "conformance/scripts/drive_oidf_wallet_flow.py",
+    "wallet_config": "conformance/oidf/configs/vp-wallet-test-config-dcql-sdjwt-haip.json",
+    "variant": {
+      "credential_format": "sd_jwt_vc",
+      "client_id_prefix": "x509_hash",
+      "request_method": "request_uri_signed",
+      "vp_profile": "haip",
+      "response_mode": "direct_post.jwt"
+    }
+  },
+  "summary": {
+    "modules": 15,
+    "modules_started": 1,
+    "passed_modules": 0,
+    "failed_modules": 0,
+    "wallet_harness_launches": 1
+  },
+  "harness_launch_observed": {
+    "session_id": 0,
+    "transport": "request_uri",
+    "method": "get",
+    "wallet_nonce_present": false,
+    "expected_client_id_present": true
+  },
+  "blocking_items": [
+    {
+      "owner": "reallyme/wallet",
+      "source": "WalletResponseGeneration",
+      "remediation": "After accepting the OIDF authorization request, resolve the request_uri, verify the Request Object, select credentials, build a DCQL-keyed vp_token, encrypt direct_post.jwt, and post the Authorization Response to the suite response_uri."
+    }
+  ],
+  "previous_completed_run": {
+    "status": "failed",
+    "suite_plan_instance": "2R7ANmdNwQqak",
+    "suite_export": "conformance/reports/oidf/exports/oid4vp-1final-wallet-test-plan-2026-07-12-failed.zip",
+    "suite_export_sha256": "7ae2b6e068c6c257e5b6e392a728d3b106d68d27deebdc9dec3c240ae888832d",
+    "failure_sources": [
+      "EnsureCredentialTrustAnchorConfigured",
+      "EnsureStatusListTrustAnchorConfigured",
+      "ExtractDCQLQueryFromClientConfiguration"
+    ]
+  }
+}

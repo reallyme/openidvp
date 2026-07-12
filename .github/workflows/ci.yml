@@ -1,0 +1,101 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+  push:
+    branches:
+      - main
+      - trunk
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+
+jobs:
+  rust:
+    name: Rust workspace
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check private dependency access
+        id: dependency-access
+        env:
+          GH_TOKEN: ${{ secrets.REALLYME_CI_TOKEN }}
+        run: |
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "::notice::Skipping Rust workspace checks because REALLYME_CI_TOKEN is not configured for private sibling repositories."
+            echo "available=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          echo "available=true" >> "${GITHUB_OUTPUT}"
+
+      - name: Checkout sibling ReallyMe crates
+        if: steps.dependency-access.outputs.available == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.REALLYME_CI_TOKEN }}
+        run: |
+          gh repo clone reallyme/identity ../identity -- --depth 1
+          gh repo clone reallyme/zk ../zk -- --depth 1
+
+      - name: Install Rust toolchain
+        if: steps.dependency-access.outputs.available == 'true'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        if: steps.dependency-access.outputs.available == 'true'
+        uses: Swatinem/rust-cache@v2
+
+      - name: Install Node.js
+        if: steps.dependency-access.outputs.available == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Format
+        if: steps.dependency-access.outputs.available == 'true'
+        run: cargo fmt --check
+
+      - name: Check
+        if: steps.dependency-access.outputs.available == 'true'
+        run: cargo check --workspace --all-features
+
+      - name: Check with warnings denied
+        if: steps.dependency-access.outputs.available == 'true'
+        run: RUSTFLAGS=-Dwarnings cargo check --workspace --all-features
+
+      - name: Clippy
+        if: steps.dependency-access.outputs.available == 'true'
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Rust binary packaging policy
+        if: steps.dependency-access.outputs.available == 'true'
+        run: scripts/check-rust-packaging.sh
+
+      - name: Release readiness
+        if: steps.dependency-access.outputs.available == 'true'
+        run: node scripts/check-release-readiness.mjs
+
+      - name: Test
+        if: steps.dependency-access.outputs.available == 'true'
+        run: cargo test --workspace --all-features
+
+      - name: Fuzz smoke targets
+        if: steps.dependency-access.outputs.available == 'true'
+        env:
+          OPENIDVP_FUZZ_RUNS: "8"
+        run: scripts/run-fuzz-smoke.sh
+
+      - name: Cargo deny
+        if: steps.dependency-access.outputs.available == 'true'
+        uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          command: check

@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[package]
+name = "reallyme-openid4vp-dc-api"
+version = "0.1.0"
+description = "OpenID4VP over the browser Digital Credentials API."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+include = ["/src/**/*.rs", "/Cargo.toml", "/README.md", "/LICENSE", "/NOTICE"]
+
+[features]
+default = ["native"]
+native = ["envelopes-mdoc/native"]
+wasm = ["envelopes-mdoc/wasm"]
+
+[dependencies]
+envelopes-mdoc = { path = "../../../identity/crates/envelopes/mdoc", version = "0.1.0", default-features = false }
+reallyme-openid4vp-types = { path = "../types", version = "0.1.0", default-features = false }
+serde = { workspace = true, features = ["derive"] }
+sha2 = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+reallyme-openid4vp-dcql = { path = "../dcql", version = "0.1.0" }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

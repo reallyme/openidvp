@@ -1,0 +1,415 @@
+// SPDX-FileCopyrightText: Copyright © 2026 ReallyMe LLC. All rights reserved
+//
+// SPDX-License-Identifier: Apache-2.0
+
+syntax = "proto3";
+
+package openid4vp.v1;
+
+option java_multiple_files = true;
+option java_package = "me.really.openid4vp.v1";
+option swift_prefix = "ReallyMeOpenID4VP";
+
+// ClientIdentifierPrefix is the OpenID4VP 1.0 final client_id prefix.
+enum ClientIdentifierPrefix {
+  CLIENT_IDENTIFIER_PREFIX_UNSPECIFIED = 0;
+  CLIENT_IDENTIFIER_PREFIX_NONE = 1;
+  CLIENT_IDENTIFIER_PREFIX_REDIRECT_URI = 2;
+  CLIENT_IDENTIFIER_PREFIX_OPENID_FEDERATION = 3;
+  CLIENT_IDENTIFIER_PREFIX_DECENTRALIZED_IDENTIFIER = 4;
+  CLIENT_IDENTIFIER_PREFIX_VERIFIER_ATTESTATION = 5;
+  CLIENT_IDENTIFIER_PREFIX_X509_SAN_DNS = 6;
+  CLIENT_IDENTIFIER_PREFIX_X509_HASH = 7;
+  CLIENT_IDENTIFIER_PREFIX_ORIGIN = 8;
+}
+
+// ResponseType is the OpenID4VP response_type.
+enum ResponseType {
+  RESPONSE_TYPE_UNSPECIFIED = 0;
+  RESPONSE_TYPE_VP_TOKEN = 1;
+  RESPONSE_TYPE_VP_TOKEN_ID_TOKEN = 2;
+}
+
+// ResponseMode is the OpenID4VP response_mode.
+enum ResponseMode {
+  RESPONSE_MODE_UNSPECIFIED = 0;
+  RESPONSE_MODE_FRAGMENT = 1;
+  RESPONSE_MODE_FORM_POST = 2;
+  RESPONSE_MODE_DIRECT_POST = 3;
+  RESPONSE_MODE_DIRECT_POST_JWT = 4;
+  RESPONSE_MODE_DC_API = 5;
+  RESPONSE_MODE_DC_API_JWT = 6;
+}
+
+// RequestUriMethod identifies how a request_uri is dereferenced.
+enum RequestUriMethod {
+  REQUEST_URI_METHOD_UNSPECIFIED = 0;
+  REQUEST_URI_METHOD_GET = 1;
+  REQUEST_URI_METHOD_POST = 2;
+}
+
+// ProblemKind is the deterministic RFC 9457 error taxonomy.
+enum ProblemKind {
+  PROBLEM_KIND_UNSPECIFIED = 0;
+  PROBLEM_KIND_INVALID_REQUEST = 1;
+  PROBLEM_KIND_INVALID_REQUEST_OBJECT = 2;
+  PROBLEM_KIND_INVALID_CLIENT_IDENTIFIER = 3;
+  PROBLEM_KIND_INVALID_DCQL_QUERY = 4;
+  PROBLEM_KIND_UNSATISFIED_DCQL_QUERY = 5;
+  PROBLEM_KIND_BINDING_EXPIRED = 6;
+  PROBLEM_KIND_SESSION_NOT_FOUND = 7;
+  PROBLEM_KIND_SESSION_MISMATCH = 8;
+  PROBLEM_KIND_UNSUPPORTED_FEATURE = 9;
+  PROBLEM_KIND_WALLET_UNAVAILABLE = 10;
+  PROBLEM_KIND_INTERNAL = 11;
+}
+
+// DcApiRequestKind is the OpenID4VP Digital Credentials API protocol kind.
+enum DcApiRequestKind {
+  DC_API_REQUEST_KIND_UNSPECIFIED = 0;
+  DC_API_REQUEST_KIND_UNSIGNED = 1;
+  DC_API_REQUEST_KIND_SIGNED = 2;
+  DC_API_REQUEST_KIND_MULTISIGNED = 3;
+}
+
+// PresentationValue is one presentation value inside a DCQL-keyed vp_token entry.
+message PresentationValue {
+  oneof kind {
+    // Compact string presentation, such as SD-JWT VC.
+    string compact = 1;
+    // JSON-native presentation encoded as canonical UTF-8 JSON bytes.
+    bytes json = 2;
+    // ReallyMe ZK presentation envelope.
+    ZkPresentation zk = 3;
+  }
+}
+
+// DerivedClaimStatement is one non-PII statement proven by a ZK presentation.
+message DerivedClaimStatement {
+  string statement_id = 1;
+  string statement = 2;
+}
+
+// ZkPresentationBinding mirrors reallyme-zk-api ZkSessionBinding.
+message ZkPresentationBinding {
+  bytes nonce_hash = 1;
+  bytes audience_hash = 2;
+  optional bytes transaction_data_hash = 3;
+}
+
+// ZkPresentation is the OpenID4VP vp_token envelope for a ReallyMe ZK proof.
+message ZkPresentation {
+  string type = 1;
+  string circuit_id = 2;
+  bytes proof = 3;
+  bytes public_inputs = 4;
+  repeated DerivedClaimStatement derived_claims = 5;
+  ZkPresentationBinding binding = 6;
+  optional ZkPresentationCircuitRef circuit_ref = 7;
+}
+
+// ZkPresentationCircuitRef names the exact imported circuit source used by
+// an artifact-backed proof. The semantic circuit_id remains the policy-level
+// stable identifier; this ref binds verifier backends to concrete artifacts.
+message ZkPresentationCircuitRef {
+  string hash_strategy = 1;
+  string family = 2;
+  string stage = 3;
+  uint32 version = 4;
+}
+
+// ClientIdentifier carries the parsed final-spec client_id.
+message ClientIdentifier {
+  ClientIdentifierPrefix prefix = 1;
+  string identifier = 2;
+  string wire_value = 3;
+}
+
+// ClientMetadata carries verifier metadata as canonical UTF-8 JSON bytes.
+message ClientMetadata {
+  bytes json = 1;
+}
+
+// AlgorithmIdentifier carries a JWA or profile-defined algorithm name.
+message AlgorithmIdentifier {
+  string value = 1;
+}
+
+// CredentialFormatIdentifier carries a DCQL credential format identifier.
+message CredentialFormatIdentifier {
+  string value = 1;
+}
+
+// VerifierMetadataCapabilities carries typed OpenID4VP verifier capabilities
+// used by SDKs and service hosts before falling back to JSON metadata.
+message VerifierMetadataCapabilities {
+  repeated ResponseMode response_modes_supported = 1;
+  repeated ClientIdentifierPrefix client_id_prefixes_supported = 2;
+  repeated CredentialFormatIdentifier vp_formats_supported = 3;
+  repeated AlgorithmIdentifier request_object_signing_alg_values_supported = 4;
+  repeated AlgorithmIdentifier response_encryption_alg_values_supported = 5;
+  repeated AlgorithmIdentifier response_encryption_enc_values_supported = 6;
+}
+
+// WalletMetadataCapabilities carries typed OpenID4VP wallet capabilities used
+// by SDKs and service hosts before falling back to JSON metadata.
+message WalletMetadataCapabilities {
+  repeated ResponseMode response_modes_supported = 1;
+  repeated RequestUriMethod request_uri_methods_supported = 2;
+  repeated CredentialFormatIdentifier vp_formats_supported = 3;
+  repeated AlgorithmIdentifier response_encryption_alg_values_supported = 4;
+  repeated AlgorithmIdentifier response_encryption_enc_values_supported = 5;
+}
+
+// TransactionData is the OpenID4VP final transaction_data object.
+message TransactionData {
+  string type = 1;
+  repeated string credential_ids = 2;
+  bytes payload_json = 3;
+}
+
+// AuthorizationRequest is the final OpenID4VP request object projection.
+message AuthorizationRequest {
+  optional ClientIdentifier client_id = 1;
+  ResponseType response_type = 2;
+  optional ResponseMode response_mode = 3;
+  optional string response_uri = 4;
+  optional string redirect_uri = 5;
+  string nonce = 6;
+  optional string wallet_nonce = 7;
+  optional string state = 8;
+  // DCQL remains a JSON-defined query language; this field carries canonical
+  // UTF-8 JSON bytes for the dcql_query object.
+  bytes dcql_query_json = 9;
+  repeated TransactionData transaction_data = 10;
+  optional ClientMetadata client_metadata = 11;
+  repeated string expected_origins = 12;
+  optional string iss = 13;
+  repeated string aud = 14;
+  optional uint64 iat = 15;
+  optional uint64 exp = 16;
+  // Non-standard metadata-by-reference extension. Wallet validation rejects
+  // this unless the host injects fresh trusted metadata evidence.
+  optional string client_metadata_uri = 17;
+}
+
+// VpTokenEntry is one final-spec vp_token object member keyed by DCQL query id.
+message VpTokenEntry {
+  string query_id = 1;
+  repeated PresentationValue presentations = 2;
+}
+
+// AuthorizationResponse is the final OpenID4VP response object projection.
+message AuthorizationResponse {
+  repeated VpTokenEntry vp_token = 1;
+  optional string state = 2;
+  repeated string transaction_data_hashes = 3;
+  optional string transaction_data_hashes_alg = 4;
+}
+
+// RequestBinding is verifier session binding material.
+message RequestBinding {
+  ClientIdentifier client_id = 1;
+  string nonce = 2;
+  optional string response_uri = 3;
+  optional string redirect_uri = 4;
+  uint64 expiry_unix = 5;
+  // SHA-256 transaction-data binding expected in ZK public inputs when present.
+  optional bytes transaction_data_hash = 6;
+}
+
+// HolderBindingClaims is the decoded holder proof subset checked by OpenID4VP.
+message HolderBindingClaims {
+  repeated string audience = 1;
+  string nonce = 2;
+  uint64 expiration_unix = 3;
+  uint64 issued_at_unix = 4;
+  optional string sd_hash = 5;
+}
+
+// SessionRecord is verifier session state retained between request and response.
+message SessionRecord {
+  RequestBinding binding = 1;
+  optional string state = 2;
+  // DCQL query used to create the request; retained for response validation.
+  bytes dcql_query_json = 3;
+}
+
+// ProblemDetails is the RFC 9457 problem details projection.
+message ProblemDetails {
+  string type = 1;
+  string title = 2;
+  uint32 status = 3;
+  optional string instance = 4;
+  ProblemKind kind = 5;
+}
+
+// RequestJwt transport carries a by-value Request Object JWT.
+message RequestJwtTransport {
+  string jwt = 1;
+  optional string expected_client_id = 2;
+  optional string expected_wallet_nonce = 3;
+}
+
+// RequestUri transport carries a by-reference Request Object.
+message RequestUriTransport {
+  string uri = 1;
+  RequestUriMethod method = 2;
+  optional string wallet_nonce = 3;
+  optional string expected_client_id = 4;
+}
+
+// InlineParams transport is only for explicit development or interop lab policy.
+message InlineParamsTransport {
+  map<string, string> params = 1;
+}
+
+// AuthorizationRequestTransport classifies the inbound authorization request.
+message AuthorizationRequestTransport {
+  oneof transport {
+    RequestJwtTransport request_jwt = 1;
+    RequestUriTransport request_uri = 2;
+    InlineParamsTransport inline_params = 3;
+  }
+}
+
+// DcApiProtocol identifies the W3C Digital Credentials API OpenID4VP protocol.
+message DcApiProtocol {
+  uint32 version = 1;
+  DcApiRequestKind kind = 2;
+}
+
+// DigitalCredentialGetRequest is one navigator.credentials.get request entry.
+message DigitalCredentialGetRequest {
+  string protocol = 1;
+  oneof data {
+    AuthorizationRequest unsigned_request = 2;
+    string signed_request = 3;
+  }
+}
+
+// DigitalCredentialRequestOptions is CredentialRequestOptions.digital.
+message DigitalCredentialRequestOptions {
+  repeated DigitalCredentialGetRequest requests = 1;
+}
+
+// DcApiAuthorizationResponse is the response for response_mode=dc_api.
+message DcApiAuthorizationResponse {
+  AuthorizationResponse data = 1;
+}
+
+// EncryptedDcApiAuthorizationResponse is the response for response_mode=dc_api.jwt.
+message EncryptedDcApiAuthorizationResponse {
+  string response = 1;
+}
+
+// BuildAuthorizationRequestRequest asks a verifier adapter to construct a
+// request object projection. Signing policy and key selection are deliberately
+// adapter-owned so private key material never crosses this API boundary.
+message BuildAuthorizationRequestRequest {
+  AuthorizationRequest request = 1;
+  bool sign_request_object = 2;
+}
+
+// BuildAuthorizationRequestResponse returns either an unsigned request object
+// or a compact signed Request Object JWT, plus verifier session binding.
+message BuildAuthorizationRequestResponse {
+  optional AuthorizationRequest request = 1;
+  optional string request_jwt = 2;
+  optional RequestBinding binding = 3;
+  optional ProblemDetails problem = 4;
+}
+
+// ValidateAuthorizationResponseRequest validates an authorization response
+// against verifier session binding material.
+message ValidateAuthorizationResponseRequest {
+  SessionRecord session = 1;
+  AuthorizationResponse response = 2;
+  uint64 now_unix = 3;
+}
+
+// ValidateAuthorizationResponseResponse carries validation outcome without
+// exposing raw request or credential material in error strings.
+message ValidateAuthorizationResponseResponse {
+  bool valid = 1;
+  optional ProblemDetails problem = 2;
+}
+
+// ParseAuthorizationRequestTransportRequest classifies a wallet inbound
+// authorization request before network-bound request_uri resolution.
+message ParseAuthorizationRequestTransportRequest {
+  string input = 1;
+  uint64 max_request_jwt_bytes = 2;
+  bool require_signed_request_object = 3;
+}
+
+// ParseAuthorizationRequestTransportResponse returns the pure transport parse
+// result or a typed RFC 9457 problem.
+message ParseAuthorizationRequestTransportResponse {
+  optional AuthorizationRequestTransport transport = 1;
+  optional ProblemDetails problem = 2;
+}
+
+// VerifyAuthorizationRequestRequest verifies request-object signature,
+// client_id prefix binding, origin binding, and expiry after adapters resolve
+// any request_uri content.
+message VerifyAuthorizationRequestRequest {
+  AuthorizationRequestTransport transport = 1;
+  optional string origin = 2;
+  uint64 now_unix = 3;
+}
+
+// VerifyAuthorizationRequestResponse returns the verified final-spec request
+// projection or a typed RFC 9457 problem.
+message VerifyAuthorizationRequestResponse {
+  optional AuthorizationRequest request = 1;
+  optional ProblemDetails problem = 2;
+}
+
+// BuildDigitalCredentialRequestOptionsRequest builds browser
+// CredentialRequestOptions.digital from typed OpenID4VP request entries.
+message BuildDigitalCredentialRequestOptionsRequest {
+  repeated DigitalCredentialGetRequest requests = 1;
+}
+
+// BuildDigitalCredentialRequestOptionsResponse returns Digital Credentials API
+// request options or a typed RFC 9457 problem.
+message BuildDigitalCredentialRequestOptionsResponse {
+  optional DigitalCredentialRequestOptions options = 1;
+  optional ProblemDetails problem = 2;
+}
+
+// DecodeDcApiAuthorizationResponseRequest normalizes plaintext or encrypted
+// DC API responses after browser delivery.
+message DecodeDcApiAuthorizationResponseRequest {
+  oneof response {
+    DcApiAuthorizationResponse plaintext = 1;
+    EncryptedDcApiAuthorizationResponse encrypted = 2;
+  }
+}
+
+// DecodeDcApiAuthorizationResponseResponse returns final OpenID4VP response
+// data after adapter-owned decryption when response_mode=dc_api.jwt.
+message DecodeDcApiAuthorizationResponseResponse {
+  optional AuthorizationResponse response = 1;
+  optional ProblemDetails problem = 2;
+}
+
+// OpenId4VpVerifierService is the Connect verifier boundary.
+service OpenId4VpVerifierService {
+  rpc BuildAuthorizationRequest(BuildAuthorizationRequestRequest) returns (BuildAuthorizationRequestResponse);
+  rpc ValidateAuthorizationResponse(ValidateAuthorizationResponseRequest) returns (ValidateAuthorizationResponseResponse);
+}
+
+// OpenId4VpWalletService is the Connect wallet boundary.
+service OpenId4VpWalletService {
+  rpc ParseAuthorizationRequestTransport(ParseAuthorizationRequestTransportRequest) returns (ParseAuthorizationRequestTransportResponse);
+  rpc VerifyAuthorizationRequest(VerifyAuthorizationRequestRequest) returns (VerifyAuthorizationRequestResponse);
+}
+
+// OpenId4VpDcApiService is the Connect boundary for W3C Digital Credentials
+// API binding helpers.
+service OpenId4VpDcApiService {
+  rpc BuildDigitalCredentialRequestOptions(BuildDigitalCredentialRequestOptionsRequest) returns (BuildDigitalCredentialRequestOptionsResponse);
+  rpc DecodeDcApiAuthorizationResponse(DecodeDcApiAuthorizationResponseRequest) returns (DecodeDcApiAuthorizationResponseResponse);
+}

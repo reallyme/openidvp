@@ -1,0 +1,22 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "report": "eudi-interoperability",
+  "status": "pinned_upstream_inventory_refreshed",
+  "generated_at": "2026-07-12",
+  "summary": {
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  "evidence": [
+    "conformance/eudi/sources.lock",
+    "conformance/eudi/upstream-tests.json",
+    "conformance/eudi/fixture-inventory.json"
+  ],
+  "remaining_external_runs": [
+    "live EUDI ITB verifier suite execution",
+    "live EUDI/EWC wallet application interoperability execution"
+  ]
+}

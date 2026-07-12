@@ -1,0 +1,49 @@
+{
+  "spdx_file_copyright_text": "Copyright © 2026 ReallyMe LLC. All rights reserved",
+  "spdx_license_identifier": "Apache-2.0",
+  "schema_version": 1,
+  "specifications": [
+    {
+      "id": "openid4vp-1.0-final",
+      "title": "OpenID for Verifiable Presentations 1.0 Final",
+      "url": "https://openid.net/specs/openid-4-verifiable-presentations-1_0-final.html",
+      "status": "locked_by_url",
+      "role": "normative"
+    },
+    {
+      "id": "openid4vp-1.0-errata",
+      "title": "OpenID for Verifiable Presentations 1.0 Errata-Incorporating",
+      "url": "https://openid.net/specs/openid-4-verifiable-presentations-1_0.html",
+      "status": "tracked_for_regression_review",
+      "role": "normative_update_monitor"
+    },
+    {
+      "id": "haip-1.0-final",
+      "title": "OpenID4VC High Assurance Interoperability Profile 1.0 Final",
+      "url": "https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0-final.html",
+      "status": "locked_by_url",
+      "role": "profile"
+    },
+    {
+      "id": "rfc9101",
+      "title": "OAuth 2.0 JWT-Secured Authorization Request",
+      "url": "https://www.rfc-editor.org/rfc/rfc9101.html",
+      "status": "locked_by_rfc_number",
+      "role": "normative_dependency"
+    },
+    {
+      "id": "rfc9457",
+      "title": "Problem Details for HTTP APIs",
+      "url": "https://www.rfc-editor.org/rfc/rfc9457.html",
+      "status": "locked_by_rfc_number",
+      "role": "normative_dependency"
+    },
+    {
+      "id": "w3c-digital-credentials-editor-draft",
+      "title": "W3C Digital Credentials API Editor's Draft",
+      "url": "https://w3c-fedid.github.io/digital-credentials/",
+      "status": "volatile_draft_tracked",
+      "role": "draft_dependency"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "name": "OpenID4VP style and API audit",
+  "status": "reviewed",
+  "scope": [
+    "handwritten Rust crate boundaries",
+    "OpenID4VP protobuf and Buffa/Connect generation",
+    "public facade shape for identity-sdk consumption",
+    "sibling reallyme/wallet and reallyme/identity-sdk integration surfaces"
+  ],
+  "records": [
+    {
+      "id": "thin-lib-files",
+      "status": "passing",
+      "evidence": [
+        "src/lib.rs",
+        "crates/types/src/lib.rs",
+        "crates/verifier/src/lib.rs",
+        "crates/wallet/src/lib.rs",
+        "crates/runtime/src/lib.rs",
+        "crates/proto/codec/src/lib.rs"
+      ],
+      "summary": "Public crate roots only declare focused modules and explicit supported facade exports."
+    },
+    {
+      "id": "no-handwritten-wildcard-exports",
+      "status": "passing",
+      "evidence": [
+        "workspace clippy wildcard_imports deny",
+        "manual scan excludes generated Buffa and Connect code"
+      ],
+      "summary": "Handwritten source avoids wildcard imports and wildcard exports; generated code remains isolated under crates/proto/openid4vp/src/generated."
+    },
+    {
+      "id": "typed-errors",
+      "status": "passing",
+      "evidence": [
+        "crates/types/src/error.rs",
+        "crates/verifier/src/error.rs",
+        "crates/wallet/src/error.rs",
+        "crates/runtime/src/report_runtime_error.rs",
+        "crates/proto/codec/src/report_proto_error.rs"
+      ],
+      "summary": "Protocol, verifier, wallet, runtime, and proto codec errors use fixed enum reason taxonomies without arbitrary string payloads."
+    },
+    {
+      "id": "proto-first-boundary",
+      "status": "passing",
+      "evidence": [
+        "protos/openid4vp/v1/openid4vp.proto",
+        "buf.yaml",
+        "buf.gen.yaml",
+        "crates/proto/openid4vp/src/generated.rs",
+        "crates/proto/codec/src/lib.rs"
+      ],
+      "summary": "Buffa messages, Connect services, and codec adapters are the first-class SDK/service boundary; JSON helpers map generated protobuf JSON rather than defining a second wire model."
+    },
+    {
+      "id": "sibling-proto-imports",
+      "status": "not_applicable",
+      "evidence": [
+        "reallyme/openidvc/protos/reallyme/openidvc/v1/openidvc.proto",
+        "protos/openid4vp/v1/openid4vp.proto"
+      ],
+      "summary": "OpenIDVC and OpenIDVP currently keep protocol-specific proto contracts independent and use JSON bytes for externally specified structures such as metadata, JWK-like material, claims, and DCQL. There is no shared sibling proto type that OpenIDVP should import today."
+    },
+    {
+      "id": "identity-sdk-facade",
+      "status": "passing",
+      "evidence": [
+        "src/lib.rs",
+        "conformance/reports/identity-sdk-migration.json",
+        "reallyme/identity-sdk/crates/sdk/src/openid4vp.rs",
+        "reallyme/identity-sdk/crates/sdk/tests/openid4vp_sibling_facade_tests.rs",
+        "reallyme/identity-sdk/crates/sdk/tests/openid4vp_metadata_tests.rs"
+      ],
+      "summary": "The root OpenIDVP facade mirrors reallyme/openidvc and is consumed by identity-sdk through sibling OpenIDVP crates and final-shape facade tests."
+    },
+    {
+      "id": "wallet-boundary",
+      "status": "passing",
+      "evidence": [
+        "reallyme/wallet/proto/reallyme/wallet/v1/wallet.proto imports openid4vp/v1/openid4vp.proto",
+        "conformance/oidf-wallet-plan.toml",
+        "conformance/scripts/run_oidf_wallet_plan.sh",
+        "conformance/reports/oidf-wallet.json",
+        "reallyme/wallet/conformance/tests/conformance_structure_tests.rs",
+        "reallyme/wallet/conformance/tests/proto_contract_tests.rs"
+      ],
+      "summary": "The wallet repository imports this repository's OpenIDVP proto instead of redeclaring request/response messages, and its conformance tests enforce DCQL OpenIDVP fixtures rather than Presentation Exchange."
+    }
+  ]
+}
